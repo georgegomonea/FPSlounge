@@ -5,7 +5,6 @@ const {
 const {
     MessageEmbed, 
 } = require('discord.js');
-const cache = require('../src/handlers/cache');
 
 module.exports = {
     name: "inrole",
@@ -41,85 +40,72 @@ module.exports = {
         const FnCoach = 2;
         const WzCoach = 1003470192283766784;
 
-
-        let namelist = new Promise((resolve, reject) => {
+        let namelist;
+        
             switch (interaction.options.getSubcommand()) {
                 case 'apex':
-                    getNames(guild, ApexCoach);
+                namelist = await getNames(guild, ApexCoach);
                     
                     
                     break;
                 case 'valorant':
-                    getNames(guild, ValCoach);
+                  await getNames(guild, ValCoach);
     
                     break;
                 case 'warzone':
-                    getNames(guild, WzCoach);
                     
-                    let test = cache.get(WzCoach);
-                     
-                    if(test != null) {
-                        resolve(test);
-                    } else{
-                        reject('no one found');
-                    }
-                    
+                namelist = await getNames(guild, WzCoach);
+
                     break;
                 case 'fortnite':
                     getNames(guild, FnCoach);
     
                     break;
             }
-        })
-
-        namelist.then((message) => {
-            console.log(message);
-        }).catch((message) => {
-            console.log(message);
-        })
         
 
+            let list = cache.get(WzCoach);
+
+            console.log(list);
+            
 
 
 
-        //var checkCache = cache.get(WzCoach);
-
-        //if(checkCache == null) {
-        //    console.log('nothing');
-        //} else {
-       //     console.log(checkCache);
-        //}
-
-        
-       
-
+            
         function getNames(guild, role) {
-            var names = [];
             
+           return new Promise(resolve => {
             guild.members.fetch().then(members =>
-            {
-                members.forEach(member =>
                 {
-                
-                    if(member._roles == role) {
-                        names.push(member.user.username);
-            
-                        cache.set(role, names);  
-                                                           
-                        return;
-        
-                    } else {
-                                    
-                        return;
-                                
-                    }
-                                                                    
-                });
-                
+                    let names = [];
                     
-            });
+                    members.forEach(member =>
+                    {
+                    
+                        if(member._roles == role) {
+    
+                            names.push(member.user.username);
+                   
+                        } 
+                                                      
+                    });
+    
+                    cache.set(role, names);  
+                    
+                    return names;
+                    
+                }).then(names => {
+                    
+
+                    if (names.length == 0) {
+                        names = 'no one found';
+                    }
+
+                    resolve(names);
+                });
+           })
         };
-    }
+    } 
 };
 
 

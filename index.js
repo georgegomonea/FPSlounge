@@ -9,7 +9,7 @@ const {
 
 // starting in djs v13, we are required to specify which intents we are using in the client constructor
 const client = new Client({
-    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS]
+    intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES, Intents.FLAGS.GUILD_MEMBERS, Intents.FLAGS.GUILD_VOICE_STATES]
 });
 
 const dotenv = require('dotenv')
@@ -21,9 +21,12 @@ const startup = require('./src/startup');
 // run this script upon starting up the bot and pass in the client
 startup(client)
 
-
 var cache = new Map();
 const { request } = require('./src/handlers/cache')
+
+//above is setup
+
+
 
 client.on('interactionCreate', async (interaction) => {
 
@@ -33,7 +36,7 @@ client.on('interactionCreate', async (interaction) => {
 
         if (!command) return;
 
-        if (command == 'start' || command == 'setup' || command == 'inrole') {
+        if (command == 'inrole' || command == 'sarpili' || command == 'join') {
             console.log('ran a non-baking command')
             return await command.execute(client, interaction)
         } else {
