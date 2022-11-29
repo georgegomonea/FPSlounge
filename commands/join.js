@@ -18,8 +18,6 @@ module.exports = {
 
     async execute (client, interaction, cache) {
 
-
-
         const member = interaction.member;
         const player = createAudioPlayer({
             behaviors: {
@@ -29,12 +27,13 @@ module.exports = {
 
         if (member.voice.channel) {
 
+            //initiates the variables for each reconnection
             cache.set('assault', false);
-
             cache.set('paused', false);
-
             cache.set('switch', 1);
 
+
+            //connects the bot to the member's curent cahnnel
             const channel = interaction.member.voice.channel;   
 
             const connection = joinVoiceChannel({
@@ -43,6 +42,7 @@ module.exports = {
                 adapterCreator: channel.guild.voiceAdapterCreator,
             }); 
 
+            //subscribes the connection to the music player
             connection.subscribe(player);
 
             return interaction.reply({
@@ -55,6 +55,5 @@ module.exports = {
                 content: `❌ Member not in a voice channel`
             })
         }
-
     }
 };
